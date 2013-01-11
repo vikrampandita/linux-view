@@ -36,7 +36,7 @@ int timer;
 int currentbox = 0;
 int cpu_count = 0;
 
-#define VERSION "0.5"
+#define VERSION "0.6"
 #define MAX_LINE_SIZE 1000
 
 gchar devicesFile[1000];
@@ -102,6 +102,7 @@ static void PopulateListBox (int deviceId, int refresh)
 	FILE *fp;
 	int first;
 	char *tmp;
+	char *dup_flags;
 
 	currentbox = deviceId;
 	//g_print("current box = %d \n", deviceId);
@@ -128,6 +129,7 @@ static void PopulateListBox (int deviceId, int refresh)
 	//display /proc/cpuinfo
 	fp = fopen("/proc/cpuinfo", "r");
 	dataLine = (char *)g_malloc (MAX_LINE_SIZE);
+	dup_flags = (char *)g_malloc (MAX_LINE_SIZE);
 	processor = (char *)g_malloc (MAX_LINE_SIZE);
 	sprintf(processor, "processor\t: %d", deviceId - 1);
 
@@ -144,8 +146,10 @@ static void PopulateListBox (int deviceId, int refresh)
 		} else if (first)
 			continue;
 
-		if (!strncmp("flags", dataLine, strlen("flags")))
+		if (!strncmp("flags", dataLine, strlen("flags"))) {
+			dup_flags = strdup(dataLine);
 			continue;
+		}
 
 		if (!first)
 			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer, dataLine,strlen(dataLine)); 
@@ -154,8 +158,45 @@ static void PopulateListBox (int deviceId, int refresh)
 			break;
 		}
 	}
+	//Display flags now:
+	//Wrap after every 12 words
+	{
+		char *sub;
+		int count;
+
+		sub=strtok(dup_flags, ":");
+		gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+				sub,
+				strlen(sub));
+		gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+				":\n",
+				strlen(":\n"));
+
+		while (sub) {
+		count = 0;
+		while (count!= 8 && (sub=strtok(NULL, " "))) {
+			if (!count)
+			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+					"\t\t",
+					strlen("\t\t"));
+
+			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+					sub,
+					strlen(sub));
+			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+					" ",
+					strlen(" "));
+			count++;
+		}
+		gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
+				"\n",
+				strlen("\n"));
+		}
+
+	}
 	fclose(fp);
 	g_free(dataLine);
+	g_free(dup_flags);
 	g_free(processor);
 
 	if (deviceId == (cpu_count + 1)) {
