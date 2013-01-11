@@ -35,7 +35,7 @@ GtkWidget *windowMain;
 int timer;
 int currentbox = 0;
 
-#define VERSION "0.3"
+#define VERSION "0.4"
 #define MAX_LINE_SIZE 1000
 
 gchar devicesFile[1000];
