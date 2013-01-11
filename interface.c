@@ -1,6 +1,7 @@
 /*************************************************************************
-** interface.c for USBView - a USB device viewer
-** Copyright (c) 1999, 2000, 2009 by Greg Kroah-Hartman, <greg@kroah.com>
+** interface.c for LinuxView - a linux sysfs viewer
+** Copyright (c) 2012 by Vikram Pandita <vikrampandita@gmail.com>
+** Based on usbtree by Greg Kroah-Hartman, <greg@kroah.com>
 **
 **  This program is free software; you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -78,7 +79,7 @@ static void PopulateListBox (int deviceId, int refresh);
 
 gboolean RefreshFunction(gpointer data)
 {
-	static int count;
+	//static int count;
 
 	if (currentbox == 5) {
 		//g_print("timer expire %d\n", count++);
@@ -86,19 +87,19 @@ gboolean RefreshFunction(gpointer data)
 		return TRUE;
 	}
 
-	count = 0;
+	//count = 0;
 	return FALSE;
 }
 static void PopulateListBox (int deviceId, int refresh)
 {
         char    *string;
-        char    *tempString;
         GtkTextIter begin;
         GtkTextIter end;
 	char            *dataLine;
 	char            *processor;
 	FILE *fp;
 	int first;
+	char *tmp;
 
 	currentbox = deviceId;
 	        /* clear the textbox */
@@ -129,7 +130,8 @@ static void PopulateListBox (int deviceId, int refresh)
 
 	first = 1;
 	while (!feof(fp)) {
-		fgets (dataLine, MAX_LINE_SIZE-1, fp);
+		tmp = fgets (dataLine, MAX_LINE_SIZE-1, fp);
+		tmp = tmp;
 		//if (dataLine[0] == 'p' && dataLine[1] == 'r') {
 		//	g_print("LINE:%s\n", dataLine);
 		//}
@@ -158,7 +160,8 @@ static void PopulateListBox (int deviceId, int refresh)
 		fp = fopen("/proc/meminfo", "r");
 		dataLine = (char *)g_malloc (MAX_LINE_SIZE);
 		while (!feof(fp)) {
-			fgets (dataLine, MAX_LINE_SIZE-1, fp);
+			tmp = fgets (dataLine, MAX_LINE_SIZE-1, fp);
+			tmp = tmp;
 			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer, dataLine,strlen(dataLine)); 
 		}
 		fclose(fp);
@@ -234,12 +237,11 @@ void parse_line (char * line)
 
 void LoadTree( void )
 {
-        static gboolean signal_connected = FALSE;
         FILE            *cpuinfo_file;
         char            *dataLine;
         int             finished;
-        int             i;
 	static int first = 1;
+	char *tmp;
 
 	if (!first)
 		return;
@@ -257,8 +259,8 @@ again:
         finished = 0;
         while (!finished) {
                 /* read the line in from the file */
-                fgets (dataLine, MAX_LINE_SIZE-1, cpuinfo_file);
-
+                tmp = fgets (dataLine, MAX_LINE_SIZE-1, cpuinfo_file);
+		tmp = tmp;
                 if (dataLine[strlen(dataLine)-1] == '\n')
                         parse_line (dataLine);
 
@@ -323,9 +325,6 @@ gboolean on_window1_delete_event (GtkWidget *widget, GdkEvent *event, gpointer u
 
 void on_buttonRefresh_clicked (GtkButton *button, gpointer user_data)
 {
-	//system("echo ----------------");
-	//system("ls");
-	//system("echo ----------------");
 	LoadTree();
 }
 

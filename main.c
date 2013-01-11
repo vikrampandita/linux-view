@@ -1,6 +1,7 @@
 /*************************************************************************
-** main.c for USBView - a USB device viewer
-** Copyright (c) 1999, 2000 by Greg Kroah-Hartman, <greg@kroah.com>
+** main.c for LinuxView - a simple gtk app to view linux sysfs
+** Copyright (c) 2013, by Vikram Pandita <vikrampandita@gmail.com>
+** Based on similar app by Greg Kroah-Hartman, <greg@kroah.com>
 **
 **  This program is free software; you can redistribute it and/or modify
 **  it under the terms of the GNU General Public License as published by
@@ -16,6 +17,9 @@
 
 
 #include <gtk/gtk.h>
+
+extern GtkWidget*
+create_windowMain ();
 
 int main (int argc, char *argv[])
 {
