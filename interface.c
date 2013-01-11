@@ -117,6 +117,7 @@ static void PopulateListBox (int deviceId, int refresh)
 
         string = (char *)g_malloc (1000);
 
+if (deviceId <= cpu_count) {
         /* add the name to the textbox if we have one*/
         if (deviceId == 0) {
                 gtk_text_buffer_insert_at_cursor(textDescriptionBuffer,
@@ -195,10 +196,12 @@ static void PopulateListBox (int deviceId, int refresh)
 
 	}
 	fclose(fp);
-	g_free(dataLine);
 	g_free(dup_flags);
+	g_free(dataLine);
 	g_free(processor);
 
+}
+	//meminfo 
 	if (deviceId == (cpu_count + 1)) {
 		//display /proc/meminfo lines
 		fp = fopen("/proc/meminfo", "r");
@@ -209,7 +212,6 @@ static void PopulateListBox (int deviceId, int refresh)
 			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer, dataLine,strlen(dataLine)); 
 		}
 		fclose(fp);
-		g_free(dataLine);
 		if (refresh)
 			timer = g_timeout_add_seconds(1, RefreshFunction, 0);
 	}
