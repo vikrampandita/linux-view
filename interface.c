@@ -36,7 +36,7 @@ int timer;
 int currentbox = 0;
 int cpu_count = 0;
 
-#define VERSION "0.6"
+#define VERSION "0.7"
 #define MAX_LINE_SIZE 1000
 
 gchar devicesFile[1000];
@@ -349,7 +349,7 @@ void on_buttonAbout_clicked (GtkButton *button, gpointer user_data)
 	gchar *authors[] = { "Vikram Pandita <vikrampandita@gmail.com>",
 				"Based on work by Gregkh for usbtree", NULL };
 
-	logo = gdk_pixbuf_new_from_xpm_data ((const char **)dummy);
+	logo = gdk_pixbuf_new_from_xpm_data ((const char **)rambo_xpm);
 	gtk_show_about_dialog (GTK_WINDOW (windowMain),
 		"logo", logo,
 		"program-name", "linux-view",
@@ -385,7 +385,9 @@ create_windowMain ()
 	GtkWidget *scrolledwindow1;
 	GtkWidget *hbuttonbox1;
 	GtkWidget *buttonRefresh;
+#if 0
 	GtkWidget *buttonConfigure;
+#endif
 	GtkWidget *buttonClose;
 	GtkWidget *buttonAbout;
 	GdkPixbuf *icon;
@@ -399,7 +401,7 @@ create_windowMain ()
 	gtk_window_set_title (GTK_WINDOW (windowMain), version);
 	gtk_window_set_default_size (GTK_WINDOW (windowMain), 600, 800);
 
-	icon = gdk_pixbuf_new_from_xpm_data((const char **)rambo_xpm);
+	icon = gdk_pixbuf_new_from_xpm_data((const char **)SalixTux_xpm);
 	gtk_window_set_icon(GTK_WINDOW(windowMain), icon);
 
 	vbox1 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -455,12 +457,14 @@ create_windowMain ()
 	gtk_container_set_border_width (GTK_CONTAINER (buttonRefresh), 4);
 	gtk_widget_set_can_default (buttonRefresh, TRUE);
 
+#if 0
 	buttonConfigure = gtk_button_new_with_label ("Configure...");
 	gtk_widget_set_name (buttonConfigure, "buttonConfigure");
 	gtk_widget_show (buttonConfigure);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox1), buttonConfigure);
 	gtk_container_set_border_width (GTK_CONTAINER (buttonConfigure), 4);
 	gtk_widget_set_can_default (buttonConfigure, TRUE);
+#endif
 
 	buttonAbout = gtk_button_new_from_stock(GTK_STOCK_ABOUT);
 	gtk_widget_set_name (buttonAbout, "buttonAbout");
