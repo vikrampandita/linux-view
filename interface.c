@@ -23,7 +23,7 @@
 #include <gtk/gtk.h>
 
 #include "config.h"
-#include "vikram.xpm"
+#include "SalixTux.xpm"
 #include "rambo.xpm"
 
 GtkWidget *treeUSB;
@@ -34,8 +34,9 @@ GtkWidget *windowMain;
 
 int timer;
 int currentbox = 0;
+int cpu_count = 0;
 
-#define VERSION "0.4"
+#define VERSION "0.5"
 #define MAX_LINE_SIZE 1000
 
 gchar devicesFile[1000];
@@ -60,6 +61,7 @@ static void Init (void)
         GtkTextIter begin;
         GtkTextIter end;
 
+	cpu_count = 0;
 	strcpy (devicesFile, "/proc/cpuinfo");
 
         /* blow away the tree if there is one */
@@ -81,7 +83,7 @@ gboolean RefreshFunction(gpointer data)
 {
 	//static int count;
 
-	if (currentbox == 5) {
+	if (currentbox == (cpu_count + 1)) {
 		//g_print("timer expire %d\n", count++);
 		PopulateListBox(currentbox, 0);
 		return TRUE;
@@ -102,6 +104,7 @@ static void PopulateListBox (int deviceId, int refresh)
 	char *tmp;
 
 	currentbox = deviceId;
+	//g_print("current box = %d \n", deviceId);
 	        /* clear the textbox */
         gtk_text_buffer_get_start_iter(textDescriptionBuffer,&begin);
         gtk_text_buffer_get_end_iter(textDescriptionBuffer,&end);
@@ -155,7 +158,7 @@ static void PopulateListBox (int deviceId, int refresh)
 	g_free(dataLine);
 	g_free(processor);
 
-	if (deviceId == 5) {
+	if (deviceId == (cpu_count + 1)) {
 		//display /proc/meminfo lines
 		fp = fopen("/proc/meminfo", "r");
 		dataLine = (char *)g_malloc (MAX_LINE_SIZE);
@@ -220,6 +223,8 @@ void parse_line (char * line)
                             DEVICE_ADDR_COLUMN, counter++,
                             COLOR_COLUMN, "blue",
                             -1);
+		cpu_count++;
+		//g_print("cpu count = %d\n", cpu_count);
 	}
 
 	if (!strncmp(line,"MemTotal:",9)) {
