@@ -212,6 +212,7 @@ if (deviceId <= cpu_count) {
 			gtk_text_buffer_insert_at_cursor(textDescriptionBuffer, dataLine,strlen(dataLine)); 
 		}
 		fclose(fp);
+		g_free(dataLine);
 		if (refresh)
 			timer = g_timeout_add_seconds(1, RefreshFunction, 0);
 	}
